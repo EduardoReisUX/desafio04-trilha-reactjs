@@ -25,7 +25,47 @@ interface HomeProps {
 }
 
 export default function Home() {
-  return <h1>Hello, Home!</h1>;
+  return (
+    <main className="container">
+      <div className="post">
+        <a href="#">
+          <h2>Como utilizar Hooks</h2>
+          <h4>Pensando em sincronização em vez de ciclos de vida.</h4>
+          <section className="info">
+            <time>15 Mar 2021</time>
+            <p>Joseph Oliveira</p>
+          </section>
+        </a>
+      </div>
+      <div className="post">
+        <a href="#">
+          <h2>Criando um app CRA do zero</h2>
+          <h4>
+            Tudo sobre como criar a sua primeira aplicação utilizando Create
+            React App
+          </h4>
+          <section className="info">
+            <time>19 Abr 2021</time>
+            <p>Danilo Vieira</p>
+          </section>
+        </a>
+      </div>
+      <div className="post">
+        <a href="#">
+          <h2>Como utilizar Hooks</h2>
+          <h4>Pensando em sincronização em vez de ciclos de vida.</h4>
+          <section className="info">
+            <time>15 Mar 2021</time>
+            <p>Joseph Oliveira</p>
+          </section>
+        </a>
+      </div>
+
+      <a className="seeMore" href="#">
+        Carregar mais posts
+      </a>
+    </main>
+  );
 }
 
 // export const getStaticProps = async () => {
