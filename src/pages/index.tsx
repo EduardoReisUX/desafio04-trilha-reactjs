@@ -33,7 +33,9 @@ export default function Home() {
       <div className={styles.post}>
         <Link href="#">
           <a>
-            <strong>Como utilizar Hooks</strong>
+            <strong data-hover={'Como utilizar Hooks'}>
+              Como utilizar Hooks
+            </strong>
             <p className={styles.subtitle}>
               Pensando em sincronização em vez de ciclos de vida.
             </p>
@@ -47,7 +49,9 @@ export default function Home() {
       <div className={styles.post}>
         <Link href="#">
           <a>
-            <strong>Criando um app CRA do zero</strong>
+            <strong data-hover={'Criando um app CRA do zero'}>
+              Criando um app CRA do zero
+            </strong>
             <p className={styles.subtitle}>
               Tudo sobre como criar a sua primeira aplicação utilizando Create
               React App
@@ -62,7 +66,9 @@ export default function Home() {
       <div className={styles.post}>
         <Link href="#">
           <a>
-            <strong>Como utilizar Hooks</strong>
+            <strong data-hover={'Como utilizar Hooks'}>
+              Como utilizar Hooks
+            </strong>
             <p className={styles.subtitle}>
               Pensando em sincronização em vez de ciclos de vida.
             </p>
@@ -75,7 +81,9 @@ export default function Home() {
       </div>
 
       <Link href="#">
-        <a className={styles.seeMore}>Carregar mais posts</a>
+        <a className={styles.seeMore} data-hover="Carregar mais posts">
+          Carregar mais posts
+        </a>
       </Link>
     </main>
   );

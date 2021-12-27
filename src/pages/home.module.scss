@@ -11,6 +11,26 @@
       font-size: 1.75rem;
       letter-spacing: -0.5px;
       margin-bottom: 0.5rem;
+
+      position: relative;
+
+      &::before {
+        content: attr(data-hover);
+
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        max-width: 0;
+        height: 33.3%;
+        overflow: hidden;
+        white-space: nowrap;
+
+        color: transparent;
+        /* border-bottom: 2px solid var(--highlight); */
+        background: rgba(255, 87, 178, 0.5);
+
+        transition: max-width 300ms ease-in-out;
+      }
     }
 
     .subtitle {
@@ -20,6 +40,7 @@
 
     .info {
       display: flex;
+      color: var(--info);
 
       time {
         margin-right: 1.5rem;
@@ -31,14 +52,34 @@
         font-size: 0.875rem;
       }
     }
+
+    &:hover strong::before {
+      max-width: 100%;
+    }
   }
 
   .seeMore {
     color: var(--highlight);
     font-weight: bold;
 
-    &:hover {
-      text-decoration: underline;
+    position: relative;
+
+    &:before {
+      content: attr(data-hover);
+
+      position: absolute;
+      left: 0;
+      max-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+
+      color: transparent;
+      text-decoration: 2px underline var(--highlight);
+      transition: max-width 150ms ease-in-out;
+    }
+
+    &:hover::before {
+      max-width: 100%;
     }
   }
 }
