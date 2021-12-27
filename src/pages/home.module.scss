@@ -1,1 +1,44 @@
-// TODO
+.container {
+  max-width: 45rem; // 720px
+  margin: 0 auto 4rem;
+
+  .post {
+    margin-bottom: 3rem;
+
+    strong {
+      display: block;
+      color: var(--heading);
+      font-size: 1.75rem;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.125rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .info {
+      display: flex;
+
+      time {
+        margin-right: 1.5rem;
+      }
+
+      time,
+      p {
+        margin-left: 0.5rem;
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  .seeMore {
+    color: var(--highlight);
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
