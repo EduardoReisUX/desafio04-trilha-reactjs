@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { GetStaticProps } from 'next';
 
 import { getPrismicClient } from '../services/prismic';
+import Prismic from '@prismicio/client';
 
 import { FiCalendar, FiUser } from 'react-icons/fi';
 
@@ -27,10 +28,26 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home() {
+export default function Home({ postsPagination }: HomeProps) {
   return (
     <main className={styles.container}>
-      <div className={styles.post}>
+      {postsPagination.results.map(post => {
+        return (
+          <div key={post.uid} className={styles.post}>
+            <Link href={`/post/${post.uid}`}>
+              <a>
+                <strong data-hover={post.data.title}>{post.data.title}</strong>
+                <p className={styles.subtitle}>{post.data.subtitle}</p>
+                <section className={styles.info}>
+                  <FiCalendar /> <time>{post.first_publication_date}</time>
+                  <FiUser /> <p>{post.data.author}</p>
+                </section>
+              </a>
+            </Link>
+          </div>
+        );
+      })}
+      {/* <div className={styles.post}>
         <Link href="#">
           <a>
             <strong data-hover={'Como utilizar Hooks'}>
@@ -78,7 +95,7 @@ export default function Home() {
             </section>
           </a>
         </Link>
-      </div>
+      </div> */}
 
       <Link href="#">
         <a className={styles.seeMore} data-hover="Carregar mais posts">
@@ -89,9 +106,41 @@ export default function Home() {
   );
 }
 
-// export const getStaticProps = async () => {
-//   // const prismic = getPrismicClient();
-//   // const postsResponse = await prismic.query(TODO);
+export const getStaticProps: GetStaticProps = async () => {
+  const prismic = getPrismicClient();
 
-//   // TODO
-// };
+  const postsResponse = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')],
+    {
+      fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
+      pageSize: 100,
+    }
+  );
+
+  const posts = postsResponse.results.map(post => {
+    return {
+      uid: post.uid,
+      first_publication_date: new Date(
+        post.first_publication_date
+      ).toLocaleDateString('pt-br', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }),
+      data: {
+        title: post.data.title,
+        subtitle: post.data.subtitle,
+        author: post.data.author,
+      },
+    };
+  });
+
+  return {
+    props: {
+      postsPagination: {
+        next_page: postsResponse.next_page,
+        results: posts,
+      },
+    },
+  };
+};
