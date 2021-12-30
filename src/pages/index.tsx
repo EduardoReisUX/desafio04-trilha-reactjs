@@ -9,6 +9,8 @@ import { FiCalendar, FiUser } from 'react-icons/fi';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 
 interface Post {
   uid?: string;
@@ -30,28 +32,20 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps) {
-  const [seeMore, setSeeMore] = useState(postsPagination.next_page);
+  const [nextPage, setNextPage] = useState(postsPagination.next_page);
   const [posts, setPosts] = useState<Post[]>(postsPagination.results);
 
-  const loadMorePosts = async nextPage => {
+  const loadMorePosts = async () => {
+    if (nextPage === null) return;
+
     const data = await (await fetch(nextPage)).json();
 
     const newPostPagination = {
       nextPage: data.next_page,
-      results: data.results.map(post => ({
-        uid: post.uid,
-        first_publication_date: new Date(
-          post.first_publication_date
-        ).toLocaleDateString('pt-br', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }),
-        data: post.data,
-      })),
+      results: data.results,
     };
 
-    setSeeMore(newPostPagination.nextPage);
+    setNextPage(newPostPagination.nextPage);
     setPosts([...posts, ...newPostPagination.results]);
   };
 
@@ -70,7 +64,16 @@ export default function Home({ postsPagination }: HomeProps) {
                   </strong>
                   <p className={styles.subtitle}>{post.data.subtitle}</p>
                   <section className={styles.info}>
-                    <FiCalendar /> <time>{post.first_publication_date}</time>
+                    <FiCalendar />{' '}
+                    <time>
+                      {format(
+                        new Date(post.first_publication_date),
+                        'dd MMM yyyy',
+                        {
+                          locale: ptBR,
+                        }
+                      )}
+                    </time>
                     <FiUser /> <p>{post.data.author}</p>
                   </section>
                 </a>
@@ -80,11 +83,11 @@ export default function Home({ postsPagination }: HomeProps) {
         })
       )}
 
-      {seeMore && (
+      {nextPage && (
         <Link href="/">
           <a
             className={styles.seeMore}
-            onClick={() => loadMorePosts(seeMore)}
+            onClick={loadMorePosts}
             data-hover="Carregar mais posts"
           >
             Carregar mais posts
@@ -108,13 +111,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const posts = postsResponse.results.map(post => {
     return {
       uid: post.uid,
-      first_publication_date: new Date(
-        post.first_publication_date
-      ).toLocaleDateString('pt-br', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }),
+      first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,

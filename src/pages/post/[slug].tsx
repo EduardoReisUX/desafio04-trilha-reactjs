@@ -57,7 +57,7 @@ export default function Post({ post }: PostProps) {
 
         <div className={styles.info}>
           <div className={styles.createdAt}>
-            <FiUser />
+            <FiCalendar />
             <time>
               {format(new Date(post.first_publication_date), 'dd MMM yyyy', {
                 locale: ptBR,
@@ -65,7 +65,7 @@ export default function Post({ post }: PostProps) {
             </time>
           </div>
           <div className={styles.author}>
-            <FiCalendar />
+            <FiUser />
             <p>{post?.data?.author || 'author '}</p>
           </div>
           <div className={styles.estimatedReadingTime}>
