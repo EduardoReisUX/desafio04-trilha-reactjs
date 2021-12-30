@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import { GetStaticProps } from 'next';
 
@@ -29,91 +30,78 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps) {
+  const [seeMore, setSeeMore] = useState(postsPagination.next_page);
+  const [posts, setPosts] = useState<Post[]>(postsPagination.results);
+
+  const loadMorePosts = async nextPage => {
+    const data = await (await fetch(nextPage)).json();
+
+    const newPostPagination = {
+      nextPage: data.next_page,
+      results: data.results.map(post => ({
+        uid: post.uid,
+        first_publication_date: new Date(
+          post.first_publication_date
+        ).toLocaleDateString('pt-br', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }),
+        data: post.data,
+      })),
+    };
+
+    setSeeMore(newPostPagination.nextPage);
+    setPosts([...posts, ...newPostPagination.results]);
+  };
+
   return (
     <main className={styles.container}>
-      {postsPagination.results.map(post => {
-        return (
-          <div key={post.uid} className={styles.post}>
-            <Link href={`/post/${post.uid}`}>
-              <a>
-                <strong data-hover={post.data.title}>{post.data.title}</strong>
-                <p className={styles.subtitle}>{post.data.subtitle}</p>
-                <section className={styles.info}>
-                  <FiCalendar /> <time>{post.first_publication_date}</time>
-                  <FiUser /> <p>{post.data.author}</p>
-                </section>
-              </a>
-            </Link>
-          </div>
-        );
-      })}
-      {/* <div className={styles.post}>
-        <Link href="#">
-          <a>
-            <strong data-hover={'Como utilizar Hooks'}>
-              Como utilizar Hooks
-            </strong>
-            <p className={styles.subtitle}>
-              Pensando em sincronização em vez de ciclos de vida.
-            </p>
-            <section className={styles.info}>
-              <FiCalendar /> <time>15 Mar 2021</time>
-              <FiUser /> <p>Joseph Oliveira</p>
-            </section>
-          </a>
-        </Link>
-      </div>
-      <div className={styles.post}>
-        <Link href="#">
-          <a>
-            <strong data-hover={'Criando um app CRA do zero'}>
-              Criando um app CRA do zero
-            </strong>
-            <p className={styles.subtitle}>
-              Tudo sobre como criar a sua primeira aplicação utilizando Create
-              React App
-            </p>
-            <section className={styles.info}>
-              <FiCalendar /> <time>19 Abr 2021</time>
-              <FiUser /> <p>Danilo Vieira</p>
-            </section>
-          </a>
-        </Link>
-      </div>
-      <div className={styles.post}>
-        <Link href="#">
-          <a>
-            <strong data-hover={'Como utilizar Hooks'}>
-              Como utilizar Hooks
-            </strong>
-            <p className={styles.subtitle}>
-              Pensando em sincronização em vez de ciclos de vida.
-            </p>
-            <section className={styles.info}>
-              <FiCalendar /> <time>15 Mar 2021</time>
-              <FiUser /> <p>Joseph Oliveira</p>
-            </section>
-          </a>
-        </Link>
-      </div> */}
+      {!posts ? (
+        <p>Carregando...</p>
+      ) : (
+        posts.map(post => {
+          return (
+            <div key={post.uid} className={styles.post}>
+              <Link href={`/post/${post.uid}`}>
+                <a>
+                  <strong data-hover={post.data.title}>
+                    {post.data.title}
+                  </strong>
+                  <p className={styles.subtitle}>{post.data.subtitle}</p>
+                  <section className={styles.info}>
+                    <FiCalendar /> <time>{post.first_publication_date}</time>
+                    <FiUser /> <p>{post.data.author}</p>
+                  </section>
+                </a>
+              </Link>
+            </div>
+          );
+        })
+      )}
 
-      <Link href="#">
-        <a className={styles.seeMore} data-hover="Carregar mais posts">
-          Carregar mais posts
-        </a>
-      </Link>
+      {seeMore && (
+        <Link href="/">
+          <a
+            className={styles.seeMore}
+            onClick={() => loadMorePosts(seeMore)}
+            data-hover="Carregar mais posts"
+          >
+            Carregar mais posts
+          </a>
+        </Link>
+      )}
     </main>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
-
   const postsResponse = await prismic.query(
     [Prismic.predicates.at('document.type', 'posts')],
     {
       fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
-      pageSize: 100,
+      pageSize: 2,
     }
   );
 
@@ -124,7 +112,7 @@ export const getStaticProps: GetStaticProps = async () => {
         post.first_publication_date
       ).toLocaleDateString('pt-br', {
         day: '2-digit',
-        month: 'long',
+        month: 'short',
         year: 'numeric',
       }),
       data: {
