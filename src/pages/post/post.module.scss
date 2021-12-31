@@ -57,13 +57,30 @@
 
         p {
           margin-bottom: 1rem;
+
+          &::first-letter {
+            content: '';
+          }
         }
 
         a {
+          position: relative;
+          display: inline-block;
           color: var(--highlight);
 
-          &:hover {
-            text-decoration: 2px underline var(--highlight);
+          &::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 100%;
+            background: var(--highlight);
+            height: 2px;
+            transition: right 200ms ease-in-out;
+          }
+
+          &:hover::before {
+            right: 0;
           }
         }
 
