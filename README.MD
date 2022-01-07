@@ -44,6 +44,7 @@ O desafio consistia em construir uma aplicação do zero, um blog sobre programa
 
 - [Git](https://git-scm.com)
 - [Yarn](https://yarnpkg.com)
+- [Cadastro no Prismic CMS](https://prismic.io)
 - Editor de código.
 
 ## 🖥 Como usar
@@ -59,6 +60,10 @@ $ git clone https://github.com/EduardoReisUX/desafio04-trilha-reactjs.git && cd 
 ```bash
 # Instale as dependências
 $ yarn
+
+# Crie um arquivo ".env.local" que será a cópia de
+# ".env.example" e atribua a sua variável de ambiente
+$ cp .env.example .env
 
 # Verifique os testes unitários
 $ yarn test
